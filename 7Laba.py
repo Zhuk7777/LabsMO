@@ -80,7 +80,11 @@ def goldenRatioMethod(eps, xk, lk):
 
 
 def linearizationMethod(xk,eps):
-    while(True):
+    flag = True
+    max_count_of_iterations = 1000
+    count_of_iterations = 0
+
+    while(flag):
         gradient = grad(xk)
         x_min = simplex(gradient) #z_k
         lk = x_min - xk
@@ -88,17 +92,26 @@ def linearizationMethod(xk,eps):
         x_prev = xk
         xk = x_prev + alpha*lk
         if(norm(grad(xk)) < eps or norm(xk - x_prev) < eps):
-            return xk
+            flag = False
+            x_result = xk
+        if(count_of_iterations >= max_count_of_iterations):
+            flag = False
+            x_result = xk
+            print("Превышено количество итераций")
+        count_of_iterations = count_of_iterations + 1
+
+    print(x_result)
+        
     
 
 x0 = np.zeros(2)
-eps = 0.000001
+eps = 0.00000001
 x0[0] = 0.0
 x0[1] = 0.0
 
 if(not validPoint(x0[0], x0[1])):
-    print("Данная точка не принадлежит множеству Omega, введите другую точку")
+    print("Данная точка не принадлежит множеству Omega")
 else:
-    print(linearizationMethod(x0,eps))
+    linearizationMethod(x0,eps)
 
 
